@@ -1,0 +1,41 @@
+{
+    "1": {
+        "name":"final", 
+        "color": "r", 
+        "showInLegend": true
+    },
+
+    "2": {
+        "name":"test2", 
+        "color": "b", 
+        "showInLegend": true
+    },
+
+    "3": {
+        "name":"test3", 
+        "color": "(0, 255, 255)", 
+        "showInLegend": true
+    },
+
+    "255": {
+        "name":"clicked", 
+        "color": "(255, 255, 0)", 
+        "showInLegend": true
+    },
+    "0": {
+        "name":"stop", 
+        "color": "b", 
+        "showInLegend": true
+    },
+    "-1": {
+        "name":"doubleClick", 
+        "color": "(200, 150, 200)", 
+        "showInLegend": false
+    },
+
+    "-2": {
+        "name":"doubleClick2", 
+        "color": "(200, 150, 200)", 
+        "showInLegend": false
+    }
+}
