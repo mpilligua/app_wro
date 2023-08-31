@@ -14,7 +14,7 @@ import serial.tools.list_ports
 import json 
 import pickle as pkl
 
-import wandb
+# import wandb
 
 # key = "b2feb8c598557c25c8924b3f3dc0351f498b2a8a"
 # wandb.init(project="test")
@@ -288,10 +288,10 @@ class MainWindow(QtWidgets.QMainWindow):
     def connectWandb(self):
         if self.checkBoxWandb.isChecked():
             self.update_console("Connecting to wandb. . . ")
-            wandb.login()
+            # wandb.login()
         else:
             self.update_console("Disconnecting from wandb. . . ")
-            wandb.finish()
+            # wandb.finish()
 
     # if the key "s" is pressed start saving the data
     def keyPressEvent(self, e):
@@ -332,7 +332,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # self.send_command("P")
         if self.checkBoxWandb.isChecked():
             self.startSaving = True
-            wandb.init(project="test")
+            # wandb.init(project="test")
 
     def stopRun(self):
         print("stopping run. . . ")
@@ -342,7 +342,7 @@ class MainWindow(QtWidgets.QMainWindow):
         except:
             print("There is no board connected")
         if self.checkBoxWandb.isChecked():
-            wandb.finish()
+            # wandb.finish()
             self.startSaving = False
 
     def addMasterPlot(self):
@@ -390,14 +390,14 @@ class MainWindow(QtWidgets.QMainWindow):
             plot["other_graphs"] = [p["graph"] for p in self.plotsInfo if p != plot]
             plot["graph"].other_graphs = plot["other_graphs"]
 
+        # update the master plot check boxes
+        self.update_master_plot()
+
     def update_master_plot(self):
         # look for the master plot 
         for plot in self.plotsInfo:
             if plot["name"] == "master":
                 mstPlot = plot
-
-        # for i, data in enumerate(self.LDataStream):
-            # if self.checkBox2.isChecked():
                 
 
     def change_layout(self):
@@ -502,8 +502,8 @@ class MainWindow(QtWidgets.QMainWindow):
                 return
             
             # save to wandb
-            if self.startSaving and self.checkBoxWandb.isChecked():
-                wandb.log(data)
+            # if self.startSaving and self.checkBoxWandb.isChecked():
+                # wandb.log(data)
 
             if self.counter == 0: 
                 self.initialTime = data["time"]
@@ -822,9 +822,19 @@ class LayoutWindow(QtWidgets.QWidget):
         self.tabData = QtWidgets.QWidget()
         self.tabKey = QtWidgets.QWidget()
 
-        self.tabs.addTab(self.tabPlots, "Plots")
-        self.tabs.addTab(self.tabData, "Data")
-        self.tabs.addTab(self.tabKey, "Key")
+        # scroll bars
+        scrollbarPlots = QtWidgets.QScrollArea(widgetResizable=True)
+        scrollbarPlots.setWidget(self.tabPlots)
+
+        scrollBarData = QtWidgets.QScrollArea(widgetResizable=True)
+        scrollBarData.setWidget(self.tabData)
+
+        scrollBarKey = QtWidgets.QScrollArea(widgetResizable=True)
+        scrollBarKey.setWidget(self.tabKey)
+
+        self.tabs.addTab(scrollbarPlots, "Plots")
+        self.tabs.addTab(scrollBarData, "Data")
+        self.tabs.addTab(scrollBarKey, "Key bindings")
         
         self.tabs.setCurrentIndex({"plots": 0, "data": 1, "key": 2}[tab])
 
@@ -948,7 +958,8 @@ class LayoutWindow(QtWidgets.QWidget):
 
 
     def addStream(self):
-        item = DragItem({"name": None, "numBytes": 2, "indexData": len(self.LDataStream)})
+        self.LDataStream.append({"name": None, "numBytes": 2, "indexData": len(self.LDataStream)})
+        item = DragItem(self.LDataStream[-1], self)
         self.dragLayoutData.add_item(item)
 
     def ChangeLayout(self):
@@ -1482,5 +1493,8 @@ def main():
 if __name__ == '__main__':
     main()
 
+# to export an Environment:
+#     conda env export > environment.yml
 
-pyinstaller --windowed --add-data 
+# and to create an environment from an environment.yml file:
+#     conda env create -f environment.yml
